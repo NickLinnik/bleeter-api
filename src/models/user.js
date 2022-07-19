@@ -2,6 +2,7 @@
 const {
     Model
 } = require('sequelize');
+const bcrypt = require('bcrypt');
 module.exports = (sequelize, DataTypes) => {
     class User extends Model {
         /**
@@ -11,6 +12,15 @@ module.exports = (sequelize, DataTypes) => {
          */
         static associate(models) {
             // define association here
+        }
+
+        static async getPasswrodHash(password) {
+            return new Promise((resolve, reject) =>
+                bcrypt.hash(password, Number(process.env.SALT_ROUNDS),
+                    (err, hash) => {
+                        if (err) reject(err);
+                        else resolve(hash);
+                    }));
         }
     }
 

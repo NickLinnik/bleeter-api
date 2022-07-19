@@ -1,25 +1,57 @@
 import express from 'express';
 import models from '../models';
+const {User} = models;
+import jwt from 'jsonwebtoken';
 import bcrypt from 'bcrypt';
 
 class AuthController {
     constructor() {
         this.router = express.Router();
-        this.router.post('/register', this.register)
+        this.router.post('/register', this.register);
+        this.router.post('/login', this.login);
     }
 
     async register(req, res) {
-        const {login, password, userName, gender, isSuperUser} = req.body;
-        const getPasswordHash = async () => new Promise((resolve, reject) =>
-            bcrypt.hash(password, Number(process.env.SALT_ROUNDS),
-                (err, hash) => {
-                    if (err) reject(err);
-                    else resolve(hash);
-                }));
-        const user = await models.User.create({login, password: await getPasswordHash(), userName, gender, isSuperUser}
+        const {login, userName, gender, isSuperUser} = req.body;
+        const hashPassword = await User.getPasswrodHash(req.body.password);
+        const user = await User.create(
+            {login, password: hashPassword, userName, gender, isSuperUser}
         );
-        res.send('Success')
+        const {password, ...userWithoutPassword} = user
+        res.send({login, userName, gender, isSuperUser});
+    }
+
+    async login(req, res) {
+        const invalid = 'Invalid login or password';
+
+        const {login, password} = req.body;
+        const user = await User.findOne({where: {login}});
+        if (!user) {
+            res.status(422).send({
+                Message: invalid
+            });
+        }
+        const correctPassword = await new Promise((resolve, reject) => bcrypt.compare(password, user.password,
+            (err, result) => {
+                if (err) reject(err);
+                else resolve(result);
+            }));
+
+        if (!correctPassword) {
+            res.status(422).send({
+                Message: invalid
+            });
+        }
+
+        const token = await new Promise((resolve, reject) => jwt.sign({
+            id: user.id
+        }, process.env.JWT_SECRET, {}, (err, result) => {
+            if (err) return reject(err);
+            else return resolve(result);
+        }));
+
+        res.send(token);
     }
 }
 
-export default AuthController
+export default AuthController;
