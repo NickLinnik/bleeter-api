@@ -13,7 +13,7 @@ module.exports = {
                 unique: true
             },
             password: {
-                type: Sequelize.STRING(40)
+                type: Sequelize.STRING(60)
             },
             userName: {
                 type: Sequelize.STRING
@@ -25,7 +25,8 @@ module.exports = {
                 type: Sequelize.DATE
             },
             isSuperUser: {
-                type: Sequelize.BOOLEAN
+                type: Sequelize.BOOLEAN,
+                defaultValue: false
             },
             createdAt: {
                 allowNull: false,
