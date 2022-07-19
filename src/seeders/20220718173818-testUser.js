@@ -1,4 +1,6 @@
 'use strict';
+const models = require('../models');
+const {User} = models
 
 module.exports = {
     async up(queryInterface, Sequelize) {
@@ -14,29 +16,29 @@ module.exports = {
         await queryInterface.bulkInsert('users', [
             {
                 login: 'Nick',
-                password: 'qwerty',
+                password: await User.getPasswrodHash('qwerty3'),
                 userName: 'MeridiZer',
                 gender: 'male',
                 isSuperUser: true
             },
             {
                 login: 'Albertu',
-                password: 'qwerty1',
+                password: await User.getPasswrodHash('qwerty3'),
                 userName: 'Alba',
                 gender: 'male',
                 isSuperUser: false
             },
             {
                 login: 'Gertrude',
-                password: 'qwerty2',
-                userName: 'Alba',
+                password: await User.getPasswrodHash('qwerty3'),
+                userName: 'Gertrude',
                 gender: 'female',
                 isSuperUser: false
             },
             {
                 login: 'Poncha',
-                password: 'qwerty3',
-                userName: 'Alba',
+                password: await User.getPasswrodHash('qwerty3'),
+                userName: 'Panzerschreck',
                 gender: 'other',
                 isSuperUser: false
             }

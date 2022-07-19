@@ -22,7 +22,9 @@ module.exports = {
                 type: Sequelize.ENUM('male', 'female', 'other')
             },
             lastVisited: {
-                type: Sequelize.DATE
+                allowNull: false,
+                type: 'TIMESTAMP',
+                defaultValue: Sequelize.literal('NOW()')
             },
             isSuperUser: {
                 type: Sequelize.BOOLEAN,
