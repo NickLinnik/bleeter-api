@@ -1,10 +1,8 @@
 import express from 'express';
-import models from '../models';
 import jwt from 'jsonwebtoken';
 import bcrypt from 'bcrypt';
 import util from 'util';
-
-const {User} = models;
+import {User} from '../models'
 
 class AuthController {
     constructor() {
@@ -15,7 +13,7 @@ class AuthController {
 
     async register(req, res) {
         const {login, userName, gender, isSuperUser} = req.body;
-        const hashPassword = await User.getPasswrodHash(req.body.password);
+        const hashPassword = await User.getPasswordHash(req.body.password);
         const user = await User.create(
             {login, password: hashPassword, userName, gender, isSuperUser}
         );
