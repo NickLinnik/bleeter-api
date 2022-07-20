@@ -24,7 +24,7 @@ class AuthController {
     }
 
     async login(req, res) {
-        const sendError = () => res.status(422).send({error: 'Invalid login or password'});
+        const sendError = () => res.status(422).send({message: 'Invalid login or password'});
 
         const {login, password} = req.body;
         const user = await User.findOne({where: {login}});
@@ -41,11 +41,15 @@ class AuthController {
     }
 
     async auth(req, res, next) {
-        const token = req.headers.authorization.split(' ').pop();
-        const verify = util.promisify(jwt.verify);
-        const {id} = await verify(token, process.env.JWT_SECRET, {})
-        req.user = await User.findOne({where: {id}})
-        next()
+        try {
+            const token = req.headers.authorization.split(' ').pop();
+            const verify = util.promisify(jwt.verify);
+            const {id} = await verify(token, process.env.JWT_SECRET, {});
+            req.user = await User.findOne({where: {id}});
+            next();
+        } catch (error) {
+        res.status(401).send({message: 'Unauthorized'})
+        }
     }
 }
 
