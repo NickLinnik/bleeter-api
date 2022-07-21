@@ -2,7 +2,7 @@ import express from 'express';
 import jwt from 'jsonwebtoken';
 import bcrypt from 'bcrypt';
 import util from 'util';
-import {User} from '../models'
+import {sequelize, User} from '../models';
 
 class AuthController {
     constructor() {

@@ -12,3 +12,19 @@ services:
     volumes:
       - "DB-tweetter-postgres:/var/lib/postgresql/data"
     env_file: .env
+
+  api:
+    restart: always
+    container_name: api
+    build:
+      context: .
+      dockerfile: Dockerfile
+    volumes:
+      - "./src:/usr/src/app/src"
+    depends_on:
+      - postgres
+    links:
+      - postgres:postgres
+    ports:
+      - "${PORT}:${PORT}"
+    env_file: .env

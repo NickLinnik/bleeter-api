@@ -12,7 +12,7 @@ app.use('/auth', auth.router);
 app.use(auth.auth);
 
 app.get('/test', (req, res) => {
-    res.send(req.user);
+    res.send({message: 'It works!', user: req.user});
 });
 
 app.listen(port, () => console.log(`Server started at http://localhost:${port} port`));
