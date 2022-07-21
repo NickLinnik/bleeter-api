@@ -4,7 +4,7 @@ WORKDIR /usr/src/app
 
 COPY package*.json .
 
-RUN npm i @babel/cli @babel/core nodemon -g
+RUN npm i @babel/cli @babel/core nodemon sequelize-cli -g
 
 RUN npm i
 
