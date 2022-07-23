@@ -21,26 +21,16 @@ Post.init({
   
   hooks: {
     async beforeCreate(post, options) {
-      const {transaction} = options;
-      const likeable = await Likeable.create({}, {transaction});
-      post.likeableId = likeable.id;
+      await Likeable.hooks.beforeCreate(post, options);
     },
     async beforeBulkCreate(posts, options) {
-      const {transaction} = options;
-      for (const post of posts) {
-        const {id} = await Likeable.create({}, {transaction});
-        post.likeableId = id;
-      }
+      await Likeable.hooks.beforeBulkCreate(posts, options);
     },
     async beforeDestroy(post, options) {
-      const {transaction} = options;
-      await Likeable.destroy({where: {id: post.likeableId}, transaction});
+      await Likeable.hooks.beforeDestroy(post, options);
     },
     async beforeBulkDestroy(options) {
-      const {transaction, where} = options;
-      const posts = await Post.findAll({where, transaction, attributes: ['likeableId']});
-      const likeableIds = posts.map(post => post.likeableId);
-      await Likeable.destroy({where: {id: likeableIds}});
+      await Likeable.hooks.beforeBulkDestroy(Post, options);
     }
   }
 });

@@ -39,7 +39,7 @@ module.exports = {
     ]);
   },
   
-  async down(queryInterface, Sequelize) {
+  async down() {
     await Comment.destroy({where: {}});
   }
 };

@@ -21,28 +21,19 @@ Comment.init({
   
   hooks: {
     async beforeCreate(comment, options) {
-      const {transaction} = options;
-      const likeable = await Likeable.create({}, {transaction});
-      comment.likeableId = likeable.id;
+      await Likeable.hooks.beforeCreate(comment, options);
     },
     async beforeBulkCreate(comments, options) {
-      const {transaction} = options;
-      for (const comment of comments) {
-        const {id} = await Likeable.create({}, {transaction});
-        comment.likeableId = id;
-      }
+      await Likeable.hooks.beforeBulkCreate(comments, options);
     },
     async beforeDestroy(comment, options) {
-      const {transaction} = options;
-      await Likeable.destroy({where: {id: comment.likeableId}, transaction});
+      await Likeable.hooks.beforeDestroy(comment, options);
     },
     async beforeBulkDestroy(options) {
-      const {transaction, where} = options;
-      const comments = await Comment.findAll({where, transaction, attributes: ['likeableId']});
-      const likeableIds = comments.map(comment => comment.likeableId);
-      await Likeable.destroy({where: {id: likeableIds}});
+      await Likeable.hooks.beforeBulkDestroy(Comment, options);
     }
   }
-});
+})
+;
 
 export {Comment};

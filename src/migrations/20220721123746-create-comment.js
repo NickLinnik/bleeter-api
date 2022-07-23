@@ -21,6 +21,7 @@ module.exports = {
       likeableId: {
         type: Sequelize.INTEGER,
         references: {model: 'likeables', key: 'id'},
+        onDelete: 'CASCADE',
         allowNull: false
       },
       postId: {
