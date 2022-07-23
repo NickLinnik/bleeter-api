@@ -14,11 +14,7 @@ Like.init({
 }, {
   sequelize,
   modelName: 'Like',
-  tableName: 'likes'//,
-  // indexes: {
-  //   unique: true,
-  //   fields: ['userId', 'likeableId']
-  // }
+  tableName: 'likes'
 });
 
 export {Like};

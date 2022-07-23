@@ -6,7 +6,7 @@ class Post extends Model {
   static associate(models) {
     Post.belongsTo(models.User, {foreignKey: 'userId'});
     Post.belongsTo(models.Likeable, {foreignKey: 'likeableId'});
-    // Post.hasMany(models.Comment, {foreignKey: 'postId'});
+    Post.hasMany(models.Comment, {foreignKey: 'postId'});
   }
 }
 

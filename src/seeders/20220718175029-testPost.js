@@ -1,9 +1,9 @@
 import {Post} from '../models';
-import findUsersPostsLikeables from './utils'
+import findTestUsersData from './utils'
 
 module.exports = {
   async up(queryInterface) {
-    const {Chokidar, Albertu, Poncha} = await findUsersPostsLikeables()
+    const {Chokidar, Albertu, Poncha} = await findTestUsersData()
     
     await Post.bulkCreate([
       {

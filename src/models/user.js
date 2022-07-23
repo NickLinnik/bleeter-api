@@ -5,8 +5,8 @@ import bcrypt from 'bcrypt';
 class User extends Model {
   static associate(models) {
     User.hasMany(models.Post, {foreignKey: 'userId'});
-    // User.hasMany(models.Like, {foreignKey: 'userId'});
-    // User.hasMany(models.Comment, {foreignKey: 'userId'});
+    User.hasMany(models.Like, {foreignKey: 'userId'});
+    User.hasMany(models.Comment, {foreignKey: 'userId'});
   }
   
   static async getPasswordHash(password) {

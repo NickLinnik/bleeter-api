@@ -1,12 +1,16 @@
-import {User, Post, Likeable, Like} from '../../models';
+import {User, Post, Comment, Likeable, Like} from '../../models';
 
-async function findUsersPostsLikeables() {
+async function findTestUsersData() {
+  const include = [
+    {model: Post, include: Likeable},
+    {model: Comment, include: Likeable}
+  ]
   return {
-    Chokidar: await User.findOne({where: {login: 'Chokidar'}, include: {model: Post, include: Likeable}}),
-    Albertu: await User.findOne({where: {login: 'Albertu'}, include: {model: Post, include: Likeable}}),
-    Gertrude: await User.findOne({where: {login: 'Gertrude'}, include: {model: Post, include: Likeable}}),
-    Poncha: await User.findOne({where: {login: 'Poncha'}, include: {model: Post, include: Likeable}})
+    Chokidar: await User.findOne({where: {login: 'Chokidar'}, include}),
+    Albertu: await User.findOne({where: {login: 'Albertu'}, include}),
+    Gertrude: await User.findOne({where: {login: 'Gertrude'}, include}),
+    Poncha: await User.findOne({where: {login: 'Poncha'}, include})
   };
 }
 
-export default findUsersPostsLikeables
+export default findTestUsersData
