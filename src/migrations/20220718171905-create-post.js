@@ -7,6 +7,7 @@ module.exports = {
         allowNull: false,
         autoIncrement: true,
         primaryKey: true,
+        noUpdate: true,
         type: Sequelize.INTEGER
       },
       text: {
@@ -15,16 +16,19 @@ module.exports = {
       userId: {
         type: Sequelize.INTEGER,
         references: {model: 'users', key: 'id'},
+        noUpdate: true,
         allowNull: false,
       },
       likeableId: {
         type: Sequelize.INTEGER,
         references: {model: 'likeables', key: 'id'},
         onDelete: 'CASCADE',
+        noUpdate: true,
         allowNull: false,
       },
       createdAt: {
         allowNull: false,
+        noUpdate: true,
         type: 'TIMESTAMP',
         defaultValue: Sequelize.literal('NOW()')
       },

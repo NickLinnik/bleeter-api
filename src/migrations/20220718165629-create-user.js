@@ -6,10 +6,13 @@ module.exports = {
                 allowNull: false,
                 autoIncrement: true,
                 primaryKey: true,
+                noUpdate: true,
                 type: Sequelize.INTEGER
             },
             login: {
                 type: Sequelize.STRING(40),
+                noUpdate: true,
+                allowNull: false,
                 unique: true
             },
             password: {
@@ -20,19 +23,16 @@ module.exports = {
                 type: Sequelize.STRING
             },
             gender: {
-                type: Sequelize.ENUM('male', 'female', 'other')
+                type: Sequelize.ENUM('male', 'female', 'other'),
             },
-            lastVisited: {
-                allowNull: false,
-                type: 'TIMESTAMP',
-                defaultValue: Sequelize.literal('NOW()')
-            },
-            isSuperUser: {
+            admin: {
                 type: Sequelize.BOOLEAN,
-                defaultValue: false
+                defaultValue: false,
+                allowNull: false
             },
             createdAt: {
                 allowNull: false,
+                noUpdate: true,
                 type: 'TIMESTAMP',
                 defaultValue: Sequelize.literal('NOW()')
             },

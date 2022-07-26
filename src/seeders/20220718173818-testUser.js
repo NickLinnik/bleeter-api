@@ -5,31 +5,30 @@ module.exports = {
     await queryInterface.bulkInsert('users', [
       {
         login: 'Chokidar',
-        password: await User.getPasswordHash('qwerty1'),
+        password: await User.hashPassword('qwerty1'),
         userName: 'Usepolling',
         gender: 'male',
-        isSuperUser: true
+        admin: true
       },
       {
         login: 'Albertu',
-        password: await User.getPasswordHash('qwerty2'),
+        password: await User.hashPassword('qwerty2'),
         userName: 'Alba',
         gender: 'male',
-        isSuperUser: false
+        admin: false
       },
       {
         login: 'Gertrude',
-        password: await User.getPasswordHash('qwerty3'),
-        userName: 'Gertrude',
+        password: await User.hashPassword('qwerty3'),
         gender: 'female',
-        isSuperUser: false
+        admin: false
       },
       {
         login: 'Poncha',
-        password: await User.getPasswordHash('qwerty4'),
+        password: await User.hashPassword('qwerty4'),
         userName: 'Panzerschreck',
         gender: 'other',
-        isSuperUser: false
+        admin: false
       }
     ]);
   },

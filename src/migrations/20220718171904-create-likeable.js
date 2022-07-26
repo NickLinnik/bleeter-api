@@ -6,6 +6,7 @@ module.exports = {
         allowNull: false,
         autoIncrement: true,
         primaryKey: true,
+        noUpdate: true,
         type: Sequelize.INTEGER
       }
     });

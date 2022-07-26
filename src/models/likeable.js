@@ -33,6 +33,7 @@ class Likeable extends Model {
   static associate(models) {
     Likeable.hasOne(models.Post, {foreignKey: 'likeableId'});
     Likeable.hasOne(models.Comment, {foreignKey: 'likeableId'});
+    Likeable.hasMany(models.Like, {foreignKey: 'id'})
   }
 }
 

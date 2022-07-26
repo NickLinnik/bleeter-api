@@ -3,8 +3,8 @@ import {DataTypes, Model} from 'sequelize';
 
 class Like extends Model {
   static associate(models) {
-    Like.belongsTo(models.User);
-    Like.belongsTo(models.Likeable);
+    Like.belongsTo(models.User, {foreignKey: 'userId'});
+    Like.belongsTo(models.Likeable, {foreignKey: 'likeableId'});
   }
 }
 
