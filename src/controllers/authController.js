@@ -14,22 +14,10 @@ class AuthController {
   }
   
   async register(req, res) {
-    let admin = false;
-    if (req.body.data.admin) {
-      if (req.user.admin) {
-        admin = req.body.admin;
-      } else {
-        return res.status(401).send({message: 'Access denied. Only admin users can register other admin users.'});
-      }
-    }
-    
-    const {login, userName, gender} = req.body.data;
-    const hashPassword = await User.hashPassword(req.body.data.password);
-    const user = await User.create(
-      {login, password: hashPassword, userName, gender, admin}
-    );
-    const {password, ...userWithoutPassword} = user.dataValues;
-    return res.send(userWithoutPassword);
+    const allowedFields = ['login', 'password', 'userName', 'gender'];
+    return await User.register(req.body.data, allowedFields).then(
+      (user) => res.send({user}),
+      (reason) => res.status(422).send({message: reason}));
   }
   
   async login(req, res) {
@@ -45,22 +33,30 @@ class AuthController {
     
     const sign = promisify(jwt.sign);
     const token = await sign({
-      id: user.id
-    }, process.env.JWT_SECRET, {});
+      login: user.login
+    }, process.env.JWT_SECRET, {expiresIn: process.env.JWT_EXP});
     
     return res.send({token});
   }
   
-  async authorize(req, res, next) {
+  async authorizeUser(req, res, next) {
     try {
       const token = req.headers.authorization.split(' ').pop();
       const verify = promisify(jwt.verify);
-      const {id} = await verify(token, process.env.JWT_SECRET, {});
-      req.user = await User.findOne({where: {id}});
+      const {login} = await verify(token, process.env.JWT_SECRET, {});
+      req.user = await User.findOne({where: {login}});
       return next();
-    } catch (error) {
+    } catch (err) {
       return res.status(401).send({message: 'Access denied. Log in in order to proceed.'});
     }
+  }
+  
+  // must be used after authorizeUser
+  async authorizeAdmin(req, res, next) {
+    if (!req.user.admin) {
+      return res.status(401).send({message: 'Access denied. Log in as admin in order to proceed.'});
+    }
+    return next();
   }
 }
 
