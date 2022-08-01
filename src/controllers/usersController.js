@@ -1,4 +1,6 @@
 import express from 'express';
+
+import {validateBase} from '../ajvSchemas/userSchemas';
 import {User} from '../models';
 
 class UsersController {
@@ -21,18 +23,16 @@ class UsersController {
   }
   
   async getUser(req, res) {
-    console.log(req.params.id);
-    const user = await User.findUserFullInfo(req.params.id)
+    const user = await User.findUserFullInfo(req.params.id);
     return res.send({user});
   }
   
   async updateMe(req, res) {
-    const user = req.user;
-    const allowedFields = ['login', 'password', 'userName', 'gender'];
-    const data = req.body.data;
-    return await user.updateFields(data, allowedFields)
-      .then(() => res.send({user}),
-        (reason) => res.status(422).send({message: reason}));
+    if (!validateBase(req.body.data)) {
+      return res.status(422).send({message: validateBase.errors});
+    }
+    const user = await req.user.updateFields(req.body.data);
+    return res.send({user});
   }
   
   async deleteMe(req, res) {

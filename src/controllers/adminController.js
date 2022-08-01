@@ -1,6 +1,8 @@
 import {User} from '../models';
 import express from 'express';
 
+import {adminValidate, adminValidateForCreate} from '../ajvSchemas/userSchemas';
+
 class AdminController {
   constructor() {
     this.router = express.Router();
@@ -10,18 +12,20 @@ class AdminController {
   }
   
   async registerUser(req, res) {
-    const allowedFields = ['login', 'password', 'userName', 'gender', 'admin'];
-    return await User.register(req.body.data, allowedFields).then(
-      (user) => res.send({user}),
-      (reason) => res.status(422).send({message: reason}));
+    if (!adminValidateForCreate(req.body.data)) {
+      return res.status(422).send({message: adminValidateForCreate.errors});
+    }
+    const user = await User.register(req.body.data);
+    return res.send({user});
   }
   
   async updateUser(req, res) {
-    const user = await User.findOne({where: {id: req.params.id}});
-    const allowedFields = ['login', 'password', 'userName', 'gender', 'admin'];
-    return await user.updateFields(req.body.data, allowedFields)
-      .then(() => res.send({user}),
-        (reason) => res.status(422).send({message: reason}));
+    if (!adminValidate(req.body.data)) {
+      return res.status(422).send({message: adminValidate.errors});
+    }
+    const oldUser = await User.findOne({where: {id: req.params.id}});
+    const user = await oldUser.updateFields(req.body.data);
+    return res.send({user});
   }
   
   async deleteUser(req, res) {

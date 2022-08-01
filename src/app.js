@@ -3,10 +3,12 @@ import express from 'express';
 import AuthController from './controllers/authController';
 import UsersController from './controllers/usersController';
 import AdminController from './controllers/adminController';
-import {User} from './models';
 
 const app = express();
 const authController = new AuthController();
+
+const str = 'asd/s/'
+console.log(str.replaceAll(/^\/|\/$/g, ''))
 
 app.use(express.json());
 

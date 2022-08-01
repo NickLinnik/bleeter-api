@@ -1,4 +1,4 @@
-import sequelize from './sequelize_connection';
+import sequelize from './_sequelize_connection';
 import {DataTypes, Model} from 'sequelize';
 
 class Likeable extends Model {

@@ -1,8 +1,8 @@
-import * as models from './models';
+import * as models from './_models';
 
 for (const Model of Object.values(models)) {
   Model.associate(models);
 }
 
-export * from './models';
-export {default as sequelize} from './sequelize_connection';
+export * from './_models';
+export {default as sequelize} from './_sequelize_connection';

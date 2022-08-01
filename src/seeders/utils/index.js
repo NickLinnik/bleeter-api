@@ -3,8 +3,12 @@ import {User, Post, Comment, Likeable, Like} from '../../models';
 async function findTestUsersData() {
   const include = [
     {model: Post, include: Likeable},
-    {model: Comment, include: Likeable}
-  ]
+    {
+      model: Comment, include: {
+        model: Likeable, include: Like
+      }
+    }
+  ];
   return {
     Chokidar: await User.findOne({where: {login: 'Chokidar'}, include}),
     Albertu: await User.findOne({where: {login: 'Albertu'}, include}),
@@ -13,4 +17,4 @@ async function findTestUsersData() {
   };
 }
 
-export default findTestUsersData
+export default findTestUsersData;

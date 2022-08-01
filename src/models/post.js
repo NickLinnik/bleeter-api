@@ -1,6 +1,6 @@
-import sequelize from './sequelize_connection';
+import sequelize from './_sequelize_connection';
 import {DataTypes, Model} from 'sequelize';
-import {Likeable} from './models';
+import {Likeable} from './_models';
 
 class Post extends Model {
   static associate(models) {

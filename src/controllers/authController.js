@@ -2,6 +2,8 @@ import express from 'express';
 import jwt from 'jsonwebtoken';
 import bcrypt from 'bcrypt';
 import {promisify} from 'util';
+
+import {validateForCreate} from '../ajvSchemas/userSchemas';
 import {User} from '../models';
 
 class AuthController {
@@ -14,10 +16,11 @@ class AuthController {
   }
   
   async register(req, res) {
-    const allowedFields = ['login', 'password', 'userName', 'gender'];
-    return await User.register(req.body.data, allowedFields).then(
-      (user) => res.send({user}),
-      (reason) => res.status(422).send({message: reason}));
+    if (!validateForCreate(req.body.data)) {
+      return res.status(422).send({message: validateForCreate.errors});
+    }
+    const user = await User.register(req.body.data);
+    return res.send({user});
   }
   
   async login(req, res) {
@@ -40,15 +43,14 @@ class AuthController {
   }
   
   async authorizeUser(req, res, next) {
-    try {
-      const token = req.headers.authorization.split(' ').pop();
-      const verify = promisify(jwt.verify);
-      const {login} = await verify(token, process.env.JWT_SECRET, {});
-      req.user = await User.findOne({where: {login}});
-      return next();
-    } catch (err) {
+    const token = req.headers.authorization.split(' ').pop();
+    const verify = promisify(jwt.verify);
+    const {login} = await verify(token, process.env.JWT_SECRET, {});
+    req.user = await User.findOne({where: {login}});
+    if (!req.user) {
       return res.status(401).send({message: 'Access denied. Log in in order to proceed.'});
     }
+    return next();
   }
   
   // must be used after authorizeUser

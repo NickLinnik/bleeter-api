@@ -1,7 +1,7 @@
-import sequelize from './sequelize_connection';
+import sequelize from './_sequelize_connection';
 import {DataTypes, Model} from 'sequelize';
 import bcrypt from 'bcrypt';
-import {getInvalidFields} from '../controllers/utils';
+
 import {Post} from './post';
 import {Likeable} from './likeable';
 import {Like} from './like';
@@ -33,7 +33,7 @@ class User extends Model {
         }
       ]
     });
-    return user.dataValues
+    return user.dataValues;
   }
   
   static async hashPassword(password) {
@@ -45,28 +45,21 @@ class User extends Model {
         }));
   }
   
-  static async register(data, allowedFields) {
-    const invalidFields = getInvalidFields(data, allowedFields);
-    if (invalidFields.length) {
-      throw new Error(`[${invalidFields}] fields are not allowed for user registration.
-        Allowed fields are: [${allowedFields}]`);
-    }
+  static async register(data) {
     data.password = await User.hashPassword(data.password);
-    const user = await User.create(data)
+    const user = await User.create(data);
     const {password, ...userSafe} = user.dataValues;
     return userSafe;
   }
   
-  async updateFields(data, allowedFields) {
-    const invalidFields = getInvalidFields(data, allowedFields);
-    if (invalidFields.length) {
-      throw new Error(`[${invalidFields}] fields are not allowed for user update.
-        Allowed fields are: [${allowedFields}]`);
-    }
+  async updateFields(data) {
     // override userData with new values if their representing fields exist in query
     const userData = {...this, ...data};
-    userData.password = data.password ? User.hashPassword(data.password) : userData.password;
-    return await this.update(userData);
+    userData.password = data.password ?
+      User.hashPassword(data.password) : userData.password;
+    const user = await this.update(userData)
+    const {password, ...userSafe} = user.dataValues;
+    return userSafe;
   }
 }
 
