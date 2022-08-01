@@ -4,11 +4,10 @@ import AuthController from './controllers/authController';
 import UsersController from './controllers/usersController';
 import AdminController from './controllers/adminController';
 
-const app = express();
-const authController = new AuthController();
+import {User} from './models';
 
-const str = 'asd/s/'
-console.log(str.replaceAll(/^\/|\/$/g, ''))
+const app = express();
+const authController = new AuthController({User});
 
 app.use(express.json());
 
@@ -16,8 +15,8 @@ app.use('/auth', authController.router);
 app.use(authController.authorizeUser);
 app.use('/admin', authController.authorizeAdmin);
 
-app.use('/admin', new AdminController().router);
-app.use('/users', new UsersController().router);
+app.use('/admin', new AdminController({User}).router);
+app.use('/users', new UsersController({User}).router);
 
 app.listen(process.env.PORT, () =>
   console.log(`Server started at http://${process.env.HOST}:${process.env.PORT} port`));

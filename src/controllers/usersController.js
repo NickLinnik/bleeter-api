@@ -1,10 +1,10 @@
 import express from 'express';
 
 import {validateBase} from '../ajvSchemas/userSchemas';
-import {User} from '../models';
 
 class UsersController {
-  constructor() {
+  constructor({User}) {
+    this.User = User;
     this.router = express.Router();
     this.router.post('/update/account', this.updateMe);
     this.router.post('/delete/account', this.deleteMe);
@@ -12,28 +12,28 @@ class UsersController {
     this.router.get('/:id', this.getUser);
   }
   
-  async searchUsers(req, res) {
-    const users = await User.findAll({
+  searchUsers = async (req, res) => {
+    const users = await this.User.findAll({
       where: req.query,
       attributes: {
         exclude: ['password']
       }
     });
     return res.send({users});
-  }
+  };
   
-  async getUser(req, res) {
-    const user = await User.findUserFullInfo(req.params.id);
+  getUser = async (req, res) => {
+    const user = await this.User.findUserFullInfo(req.params.id);
     return res.send({user});
-  }
+  };
   
-  async updateMe(req, res) {
+  updateMe = async (req, res) => {
     if (!validateBase(req.body.data)) {
       return res.status(422).send({message: validateBase.errors});
     }
     const user = await req.user.updateFields(req.body.data);
     return res.send({user});
-  }
+  };
   
   async deleteMe(req, res) {
     await req.user.destroy();
