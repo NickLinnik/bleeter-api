@@ -22,6 +22,16 @@ module.exports = {
       {userId: Gertrude.id, likeableId: Chokidar.Comments[0].likeableId},
       {userId: Gertrude.id, likeableId: Albertu.Comments[0].likeableId},
       {userId: Poncha.id, likeableId: Chokidar.Comments[0].likeableId},
+      // Replies section
+      {userId: Chokidar.id, likeableId: Albertu.Comments[2].likeableId},
+      {userId: Chokidar.id, likeableId: Gertrude.Comments[3].likeableId},
+      {userId: Chokidar.id, likeableId: Gertrude.Comments[4].likeableId},
+      {userId: Albertu.id, likeableId: Chokidar.Comments[2].likeableId},
+      {userId: Albertu.id, likeableId: Gertrude.Comments[4].likeableId},
+      {userId: Albertu.id, likeableId: Poncha.Comments[0].likeableId},
+      {userId: Gertrude.id, likeableId: Chokidar.Comments[2].likeableId},
+      {userId: Gertrude.id, likeableId: Albertu.Comments[3].likeableId},
+      {userId: Poncha.id, likeableId: Chokidar.Comments[2].likeableId},
     ]);
   },
   

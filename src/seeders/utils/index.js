@@ -2,11 +2,21 @@ import {User, Post, Comment, Likeable, Like} from '../../models';
 
 async function findTestUsersData() {
   const include = [
-    {model: Post, include: Likeable},
     {
-      model: Comment, include: {
-        model: Likeable, include: Like
+      model: Post, include: {
+        model: Likeable,
       }
+    },
+    {
+      model: Comment, include: [
+        {model: Likeable, include: Like},
+        {
+          model: Comment, include: [
+            {model: Likeable, include: Like},
+            {model: Comment}
+          ]
+        }
+      ]
     }
   ];
   return {

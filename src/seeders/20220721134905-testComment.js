@@ -3,11 +3,16 @@ import findTestUsersData from './utils';
 
 module.exports = {
   async up(queryInterface, Sequelize) {
-    const {Chokidar, Albertu, Gertrude, Poncha} = await findTestUsersData();
+    let {Chokidar, Albertu, Gertrude, Poncha} = await findTestUsersData();
     
     await Comment.bulkCreate([
       {
         text: 'Lorem ipsum dolor sit amet, consectetur adipiscing elit. Sed pharetra lacus nec hendrerit porta. Phasellus non ex eget orci pulvinar pulvinar. Nulla facilisi.',
+        userId: Chokidar.id,
+        postId: Albertu.Posts[0].id
+      },
+      {
+        text: 'Phasellus ex felis, rhoncus et lacus vitae, euismod molestie arcu. Curabitur laoreet condimentum purus convallis dignissim. Vivamus in porttitor metus.',
         userId: Chokidar.id,
         postId: Poncha.Posts[0].id
       },
@@ -37,6 +42,55 @@ module.exports = {
         postId: Poncha.Posts[0].id
       }
     ]);
+    // Replies section
+    
+    ({Chokidar, Albertu, Gertrude, Poncha} = await findTestUsersData());
+    await Comment.create({
+      text: 'Orci varius natoque penatibus et magnis dis parturient montes, nascetur ridiculus mus. Nulla tellus risus, porttitor interdum tristique et, ultrices et massa.',
+      userId: Chokidar.id,
+      postId: Chokidar.Posts[0].id,
+      replyToId: Albertu.Comments[0].id
+    });
+    
+    ({Chokidar, Albertu, Gertrude, Poncha} = await findTestUsersData());
+    await Comment.create({
+      text: 'Sed hendrerit erat ac laoreet bibendum. Nam pretium augue sed volutpat feugiat. Etiam commodo hendrerit sapien, sit amet mollis elit pellentesque vitae. Ut tempus sem erat, at aliquet purus convallis nec. Nam sodales feugiat metus sed pellentesque.',
+      userId: Albertu.id,
+      postId: Chokidar.Posts[0].id,
+      replyToId: Chokidar.Comments[2].id
+    });
+    
+    ({Chokidar, Albertu, Gertrude, Poncha} = await findTestUsersData());
+    await Comment.create({
+      text: 'Nulla facilisi.',
+      userId: Gertrude.id,
+      postId: Chokidar.Posts[0].id,
+      replyToId: Albertu.Comments[0].id
+    });
+    
+    ({Chokidar, Albertu, Gertrude, Poncha} = await findTestUsersData());
+    await Comment.create({
+      text: 'Suspendisse ullamcorper volutpat orci non dapibus. Lorem ipsum dolor sit amet, consectetur adipiscing elit.',
+      userId: Gertrude.id,
+      postId: Chokidar.Posts[0].id,
+      replyToId: Albertu.Comments[2].id
+    });
+    
+    ({Chokidar, Albertu, Gertrude, Poncha} = await findTestUsersData());
+    await Comment.create({
+      text: 'Sed hendrerit erat ac laoreet bibendum. Nam pretium augue sed volutpat feugiat. Etiam commodo hendrerit sapien, sit amet mollis elit pellentesque vitae. Ut tempus sem erat, at aliquet purus convallis nec. Nam sodales feugiat metus sed pellentesque.',
+      userId: Albertu.id,
+      postId: Albertu.Posts[0].id,
+      replyToId: Chokidar.Comments[0].id
+    });
+    
+    ({Chokidar, Albertu, Gertrude, Poncha} = await findTestUsersData());
+    await Comment.create({
+      text: 'Aenean lacus ligula, sodales id purus condimentum, aliquam rhoncus nisl.',
+      userId: Poncha.id,
+      postId: Poncha.Posts[0].id,
+      replyToId: Gertrude.Comments[2].id
+    });
   },
   
   async down() {

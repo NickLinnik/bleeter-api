@@ -4,6 +4,8 @@ import {Likeable} from './_models';
 
 class Comment extends Model {
   static associate(models) {
+    Comment.hasMany(models.Comment, {foreignKey: 'id'});
+    Comment.belongsTo(models.Comment, {foreignKey: 'replyToId'})
     Comment.belongsTo(models.User, {foreignKey: 'userId'});
     Comment.belongsTo(models.Likeable, {foreignKey: 'likeableId'});
   }
@@ -13,7 +15,8 @@ Comment.init({
   text: DataTypes.STRING,
   userId: DataTypes.INTEGER,
   likeableId: DataTypes.INTEGER,
-  postId: DataTypes.INTEGER
+  postId: DataTypes.INTEGER,
+  replyToId: DataTypes.INTEGER
 }, {
   sequelize,
   modelName: 'Comment',
