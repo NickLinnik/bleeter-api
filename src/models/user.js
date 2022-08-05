@@ -2,16 +2,14 @@ import sequelize from './_sequelize_connection';
 import {DataTypes, Model} from 'sequelize';
 import bcrypt from 'bcrypt';
 
-import {Post} from './post';
-import {Likeable} from './likeable';
-import {Like} from './like';
-import {Comment} from './comment';
+import {Page, Likeable, Post, Comment, Like} from '.';
 
 class User extends Model {
   static associate(models) {
     User.hasMany(models.Post, {foreignKey: 'userId'});
     User.hasMany(models.Like, {foreignKey: 'userId'});
     User.hasMany(models.Comment, {foreignKey: 'userId'});
+    User.hasOne(models.Page, {foreignKey: 'userId'});
   }
   
   static async findUserFullInfo(id) {
@@ -57,7 +55,7 @@ class User extends Model {
     const userData = {...this, ...data};
     userData.password = data.password ?
       User.hashPassword(data.password) : userData.password;
-    const user = await this.update(userData)
+    const user = await this.update(userData);
     const {password, ...userSafe} = user.dataValues;
     return userSafe;
   }
@@ -72,7 +70,17 @@ User.init({
 }, {
   sequelize,
   modelName: 'User',
-  tableName: 'users'
+  tableName: 'users',
+  
+  hooks: {
+    async afterCreate(user, options) {
+      await Page.create({userId: user.id})
+    },
+    
+    async afterBulkCreate(users, options) {
+      await Page.bulkCreate(users.map(users => ({userId: users.id})))
+    }
+  }
 });
 
 export {User};

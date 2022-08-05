@@ -13,7 +13,8 @@ class Post extends Model {
 Post.init({
   text: DataTypes.STRING,
   userId: DataTypes.INTEGER,
-  likeableId: DataTypes.INTEGER
+  likeableId: DataTypes.INTEGER,
+  // replyToId: DataTypes.INTEGER
 }, {
   sequelize,
   modelName: 'Post',

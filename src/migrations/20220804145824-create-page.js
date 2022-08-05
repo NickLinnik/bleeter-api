@@ -2,44 +2,31 @@
 
 module.exports = {
   async up(queryInterface, Sequelize) {
-    await queryInterface.createTable('posts', {
+    await queryInterface.createTable('pages', {
       id: {
         allowNull: false,
         autoIncrement: true,
         primaryKey: true,
-        noUpdate: true,
         type: Sequelize.INTEGER
-      },
-      text: {
-        type: Sequelize.STRING(4096)
       },
       userId: {
         type: Sequelize.INTEGER,
         references: {model: 'users', key: 'id'},
-        noUpdate: true,
-        onDelete: 'SET NULL'
-      },
-      likeableId: {
-        type: Sequelize.INTEGER,
-        references: {model: 'likeables', key: 'id'},
         onDelete: 'CASCADE',
         noUpdate: true,
         allowNull: false,
       },
       createdAt: {
         allowNull: false,
-        noUpdate: true,
-        type: 'TIMESTAMP',
-        defaultValue: Sequelize.literal('NOW()')
+        type: Sequelize.DATE
       },
       updatedAt: {
         allowNull: false,
-        type: 'TIMESTAMP',
-        defaultValue: Sequelize.literal('NOW()')
+        type: Sequelize.DATE
       }
     });
   },
   async down(queryInterface, Sequelize) {
-    await queryInterface.dropTable('posts');
+    await queryInterface.dropTable('pages');
   }
 };
