@@ -1,31 +1,89 @@
+import 'dotenv/config'
+import AuthController from './authController';
+import bcrypt from 'bcrypt';
+
+
 describe('authController', () => {
-  const arr = [5];
+  describe('login()', () => {
+    
+    const getUser = () => ({
+      findOne: jest.fn()
+    })
+    
+    const getRes = () => {
+      const res = {
+        status: jest.fn().mockImplementation(() => res),
+        send: jest.fn().mockImplementation(() => res)
+      };
+      return res
+    };
+    
+    it('should status return 422 on wrong login', async () => {
+      const req = {
+        body: {
+          data: {
+            login: null,
+            password: null
+          }
+        }
+      };
+      
+      const User = getUser()
+      const res = getRes()
+      
+      User.findOne.mockReturnValue(null)
+      const authController = new AuthController({User});
+      await authController.login(req, res);
+      expect(res.send).toBeCalledTimes(1);
+      expect(res.status).toBeCalledWith(422);
+    });
+    
+    it('should status 422 on wrong password', async () => {
+      const req = {
+        body: {
+          data: {
+            login: 'login',
+            password: 'wrongPassword'
+          }
+        }
+      };
   
-  beforeEach(() => {
-  })
+      const User = getUser()
+      const res = getRes()
   
-  beforeAll(() => {
-  })
+      User.findOne.mockReturnValue({
+        login: 'login',
+        password: 'password'
+      })
+      const authController = new AuthController({User});
+      await authController.login(req, res)
+      expect(res.send).toBeCalledTimes(1)
+      expect(res.status).toBeCalledWith(422)
+    });
   
-  afterEach(() => {
-  })
   
-  afterAll(() => {
-  })
+    it('should return jwt in the body', async () => {
+      const req = {
+        body: {
+          data: {
+            login: 'login',
+            password: 'password'
+          }
+        }
+      };
   
-  it.skip('should ', () => {
-    expect(2 + 2).toBe(4);
-  });
+      const User = getUser()
+      const res = getRes()
   
-  it.only('should ', () => {
-    expect(2 + 2).toBe(4)
-  });
-  
-  it.todo('should ', () => {
-    expect(2 + 2).toBe(4);
-  });
-  
-  it('should ', () => {
-    expect(2 + 2).toBe(4);
+      User.findOne.mockReturnValue({
+        login: 'login',
+        password: await bcrypt.hashSync('password', Number(process.env.SALT_ROUNDS))
+      })
+      const authController = new AuthController({User});
+      await authController.login(req, res)
+      expect(res.send).toBeCalledTimes(1)
+      expect(res.status).toBeCalledTimes(0)
+      expect(typeof res.send.mock.calls[0][0].token).toBe('string')
+    });
   });
 });
